@@ -1,6 +1,10 @@
 import secret
+import config
 import praw
 import argparse
+import sqlite3
+
+db_conn, db_cursor = None, None
 
 
 def download_comments(sub="all"):
@@ -16,32 +20,37 @@ def download_comments(sub="all"):
                          username=secret.USERNAME,
                          password=secret.PASSWORD)
 
-    for submission in reddit.subreddit(sub).hot(limit=10): # TODO: adjust the limit=10 part
-        print("Title: %s" % submission.title)
-        submission.comments.replace_more(limit=0) # TODO: Adjust replace_more
+    def save_comment(comment, parent_id):
+        db_cursor.execute(
+            "insert into comments (reddit_id, body, parent)"
+            "values (?, ?, ?)",
+            (comment.id, comment.body, parent_id)
+        )
+
+    def iterate_comment_tree(comment, parent_id):
+        if comment:
+            save_comment(comment, parent_id)
+            for reply in comment.replies:
+                iterate_comment_tree(reply, comment.id)
+
+    # TODO: adjust the limit=10 part
+    for submission in reddit.subreddit(sub).hot(limit=10):
+        submission.comments.replace_more(limit=None)
         for top_level_comment in submission.comments:
-            iterate_inorder(top_level_comment, save_comment)
+            iterate_comment_tree(top_level_comment, None)
+        db_conn.commit()
 
-def iterate_inorder(tree, func):
-    """Preform an inorder tree traversal and apply a function to each node.
-
-    Keyword arguments:
-    tree -- the data tree
-    func -- the function to apply to each entry
-    """
-    # TODO: Write the iteration loop.
-    pass
-
-def save_comment(comment):
-    """Save a comment to the database specified in config.py.
-
-    Keyword arguments:
-    comment -- the comment to save
-    """
-    # TODO: Write save function.
-    pass
 
 if __name__ == "__main__":
+    db_conn = sqlite3.connect(config.COMMENT_DB)
+    db_cursor = db_conn.cursor()
+    db_cursor.execute(
+        "create table if not exists comments "
+        "(reddit_id text,"
+        "body text,"
+        "parent integer)"
+    )
+
     parser = argparse.ArgumentParser(
         description='A seq2seq comment generator trained on Reddit comments.')
     parser.add_argument('--crawl_sub', type=str,
@@ -49,4 +58,7 @@ if __name__ == "__main__":
                         "/r/sub" provide "sub" as an argument.')
 
     args = parser.parse_args()
-    print(args.crawl_sub)
+    if args.crawl_sub:
+        download_comments(args.crawl_sub)
+
+    db_conn.close()
