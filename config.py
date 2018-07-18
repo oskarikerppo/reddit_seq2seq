@@ -1,1 +1,1 @@
-COMMENT_DB="comments.sqlite3"
+COMMENT_DB = "comments.sqlite3"
