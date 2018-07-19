@@ -6,11 +6,12 @@ A seq2seq RNN trained on Reddit comments.
 1. Install the dependencies.
 2. Create a file secret.py in this folder with the following content:
 ```python
-USERNAME="***"
-PASSWORD="***"
-USER_AGENT="***"
-API_KEY="***"
-API_SECRET="***"
+USERNAME = "***"
+PASSWORD = "***"
+USER_AGENT = "***"
+API_KEY = "***"
+API_SECRET = "***"
+
 ```
 You need to obtain valid credentials by [creating a Reddit account](https://www.reddit.com/login) and
 [creating a Reddit app](https://github.com/reddit-archive/reddit/wiki/OAuth2).
