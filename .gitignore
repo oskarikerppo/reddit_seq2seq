@@ -1,1 +1,3 @@
 secret.py
+*.sqlite3
+*.pyc

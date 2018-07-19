@@ -2,7 +2,7 @@
 
 Contributions to the project are very welcome. However,
 please first discuss the change you wish to make via issue,
-email, or any other method with the owners of this repository before making a change. 
+email, or any other method with the owners of this repository before making a change.
 
 ## Pull Request Process
 
