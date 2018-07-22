@@ -4,7 +4,7 @@ import config
 import sqlite3
 
 
-def download_comments(sub="all", submission_norepeat=True):
+def download_comments(sub="all", crawl_limit=None, submission_norepeat=True):
     """
     Crawl a subredddit and store comment trees.
 
@@ -62,7 +62,7 @@ def download_comments(sub="all", submission_norepeat=True):
             db_conn.commit()
             return True
 
-    for submission in reddit.subreddit(sub).hot(limit=None):
+    for submission in reddit.subreddit(sub).hot(limit=crawl_limit):
         if submission_norepeat:
             if not is_new_submission(submission):
                 continue
