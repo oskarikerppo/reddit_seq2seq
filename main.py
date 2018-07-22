@@ -26,6 +26,7 @@ examples:
                         '(unlimited by default)')
 
     args = parser.parse_args()
+
     if args.crawl_sub:
         if args.crawl_limit:
             reddit_crawler.download_comments(sub=args.crawl_sub,
