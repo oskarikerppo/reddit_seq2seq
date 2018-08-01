@@ -84,7 +84,7 @@ model.compile(optimizer='rmsprop', loss='categorical_crossentropy')
 model.fit(x=[tokenized_com_sentences, tokenized_rep_sentences],
 			y = target_data,
 			batch_size=64,
-			epochs=4,
+			epochs=50,
 			verbose=2,
 			validation_split=0.2)
 
@@ -137,7 +137,7 @@ def decode_seq(inp_seq):
 	return translated_sent
 
 
-for seq_index in range(10):
+for seq_index in range(20):
 	inp_seq = tokenized_com_sentences[seq_index: seq_index+1]
 	translated_sent = decode_seq(inp_seq)
 	print("---------------------------")
